@@ -1,18 +1,6 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "client/index.html",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "../dist/public"
-      }
-    },
-    {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
-    }
-  ],
+  "public": "dist/public",
   "routes": [
     {
       "src": "/api/(.*)",
@@ -20,7 +8,13 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/index.html"
+      "dest": "/dist/public/index.html"
+    }
+  ],
+  "builds": [
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
     }
   ]
 }
