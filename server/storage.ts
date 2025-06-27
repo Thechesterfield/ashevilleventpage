@@ -31,6 +31,10 @@ export interface IStorage {
   // Event-Artist relationship methods
   addArtistToEvent(eventArtist: InsertEventArtist): Promise<EventArtist>;
   removeArtistFromEvent(eventId: number, artistId: number): Promise<boolean>;
+
+  // Cleanup methods
+  clearAllEvents(): Promise<void>;
+  clearOldEvents(daysOld?: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -246,18 +250,24 @@ export class MemStorage implements IStorage {
   }
 
   async getAllEvents(): Promise<Event[]> {
-    return Array.from(this.events.values());
+    return Array.from(this.events.values()).sort((a, b) => 
+      new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+    );
   }
 
   async getEventsByVenue(venueId: number): Promise<Event[]> {
-    return Array.from(this.events.values()).filter(event => event.venueId === venueId);
+    return Array.from(this.events.values())
+      .filter(event => event.venueId === venueId)
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
   }
 
   async getEventsByDateRange(startDate: Date, endDate: Date): Promise<Event[]> {
-    return Array.from(this.events.values()).filter(event => {
-      const eventDate = new Date(event.startDate);
-      return eventDate >= startDate && eventDate <= endDate;
-    });
+    return Array.from(this.events.values())
+      .filter(event => {
+        const eventDate = new Date(event.startDate);
+        return eventDate >= startDate && eventDate <= endDate;
+      })
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
   }
 
   async getUpcomingEvents(limit?: number): Promise<Event[]> {
@@ -289,19 +299,21 @@ export class MemStorage implements IStorage {
   }
 
   async getEventsByGenre(genre: string): Promise<Event[]> {
-    return Array.from(this.events.values()).filter(event => 
-      event.genre?.toLowerCase() === genre.toLowerCase()
-    );
+    return Array.from(this.events.values())
+      .filter(event => event.genre?.toLowerCase() === genre.toLowerCase())
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
   }
 
   async searchEvents(query: string): Promise<EventWithVenue[]> {
     const lowerQuery = query.toLowerCase();
-    const matchingEvents = Array.from(this.events.values()).filter(event =>
-      event.title.toLowerCase().includes(lowerQuery) ||
-      event.description?.toLowerCase().includes(lowerQuery) ||
-      event.genre?.toLowerCase().includes(lowerQuery) ||
-      event.artistInfo?.toLowerCase().includes(lowerQuery)
-    );
+    const matchingEvents = Array.from(this.events.values())
+      .filter(event =>
+        event.title.toLowerCase().includes(lowerQuery) ||
+        event.description?.toLowerCase().includes(lowerQuery) ||
+        event.genre?.toLowerCase().includes(lowerQuery) ||
+        event.artistInfo?.toLowerCase().includes(lowerQuery)
+      )
+      .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
 
     return Promise.all(matchingEvents.map(async event => {
       const venue = await this.getVenue(event.venueId);
@@ -380,6 +392,34 @@ export class MemStorage implements IStorage {
     }
     return false;
   }
+
+  // Cleanup methods
+  async clearAllEvents(): Promise<void> {
+    this.events.clear();
+    this.eventArtists.clear();
+  }
+
+  async clearOldEvents(daysOld: number = 30): Promise<void> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysOld);
+    
+    const eventsToRemove = Array.from(this.events.values()).filter(event => 
+      new Date(event.startDate) < cutoffDate
+    );
+    
+    for (const event of eventsToRemove) {
+      this.events.delete(event.id);
+      // Also remove related event-artist relationships
+      const relatedEventArtists = Array.from(this.eventArtists.values()).filter(ea => 
+        ea.eventId === event.id
+      );
+      for (const ea of relatedEventArtists) {
+        this.eventArtists.delete(ea.id);
+      }
+    }
+  }
 }
 
-export const storage = new MemStorage();
+import { DatabaseStorage } from './database';
+
+export const storage = new DatabaseStorage();

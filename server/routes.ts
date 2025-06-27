@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertEventSchema, insertVenueSchema } from "@shared/schema";
+import { eventScheduler } from "./scheduler";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Venue routes
@@ -177,7 +178,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const events = await storage.getAllEvents();
       const venues = await storage.getAllVenues();
       
-      const genres = [...new Set(events.map(event => event.genre).filter(Boolean))];
+      const genres = Array.from(new Set(events.map(event => event.genre).filter(Boolean)));
       const venueNames = venues.map(venue => venue.name);
       
       res.json({
@@ -186,6 +187,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch filter options" });
+    }
+  });
+
+  // Event update endpoints
+  app.post("/api/admin/update-events", async (req, res) => {
+    try {
+      await eventScheduler.triggerUpdate();
+      res.json({ message: "Event update triggered successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to trigger event update" });
+    }
+  });
+
+  app.get("/api/admin/update-status", async (req, res) => {
+    try {
+      const status = eventScheduler.getStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get update status" });
     }
   });
 

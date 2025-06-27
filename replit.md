@@ -100,6 +100,8 @@ The application uses four main entities:
 
 ## Changelog
 - June 27, 2025. Initial setup
+- June 27, 2025. Added automatic event updating system with web scraping and scheduled daily updates
+- June 27, 2025. Implemented event sorting by most recent date for better user experience
 
 ## User Preferences
 
