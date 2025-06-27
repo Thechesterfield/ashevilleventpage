@@ -1,6 +1,18 @@
 {
   "version": 2,
-  "public": "dist/public",
+  "builds": [
+    {
+      "src": "client/index.html",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    },
+    {
+      "src": "server/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
@@ -8,13 +20,11 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/public/index.html"
+      "dest": "/client/index.html"
     }
   ],
-  "builds": [
-    {
-      "src": "server/index.ts",
-      "use": "@vercel/node"
-    }
-  ]
+  "env": {
+    "DATABASE_URL": "@database_url"
+  },
+  "buildCommand": "npm run build"
 }
