@@ -102,6 +102,8 @@ The application uses four main entities:
 - June 27, 2025. Initial setup
 - June 27, 2025. Added automatic event updating system with web scraping and scheduled daily updates
 - June 27, 2025. Implemented event sorting by most recent date for better user experience
+- June 27, 2025. Successfully deployed to Vercel with automatic GitHub deployments and PostgreSQL database integration
+- June 27, 2025. Fixed event filtering functionality and Vercel deployment configuration - events now load and filter properly
 
 ## User Preferences
 

@@ -25,6 +25,20 @@ export default function Events() {
 
   const { data: events, isLoading } = useQuery<EventWithVenue[]>({
     queryKey: ["/api/events", filters],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value && value !== 'all') {
+          params.append(key, value);
+        }
+      });
+      const url = `/api/events${params.toString() ? `?${params.toString()}` : ''}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch events');
+      }
+      return response.json();
+    },
   });
 
   const handleSearch = () => {
@@ -39,7 +53,13 @@ export default function Events() {
   };
 
   const handleFiltersChange = (newFilters: SearchFilters) => {
-    setFilters(newFilters);
+    // Merge new filters with existing ones, preserving search
+    setFilters(prev => ({
+      ...prev,
+      ...newFilters,
+      // Keep search if it exists
+      ...(prev.search && { search: prev.search })
+    }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -63,18 +83,18 @@ export default function Events() {
             
             {/* Search Bar */}
             <div className="max-w-xl mx-auto">
-              <div className="relative">
+              <div className="relative flex items-center">
                 <Input
                   type="text"
                   placeholder="Search events, artists, or venues..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  className="w-full px-6 py-3 text-charcoal text-lg pr-14 bg-white border-0"
+                  className="w-full px-6 py-3 text-charcoal text-lg pr-16 bg-white border-0 rounded-lg h-12"
                 />
                 <Button 
                   onClick={handleSearch}
-                  className="absolute right-2 top-2 bg-sunset hover:bg-orange-600 text-white px-4 py-1"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-sunset hover:bg-orange-600 text-white px-3 py-2 rounded-md h-8"
                   size="sm"
                 >
                   <Search className="w-4 h-4" />
@@ -86,7 +106,11 @@ export default function Events() {
       </section>
 
       {/* Filters */}
-      <FilterSection onFiltersChange={handleFiltersChange} showQuickFilters={false} />
+      <FilterSection 
+        onFiltersChange={handleFiltersChange} 
+        showQuickFilters={false}
+        currentFilters={filters}
+      />
 
       {/* Events Grid */}
       <section className="py-16 bg-white">

@@ -14,24 +14,32 @@ import type { FilterOptions, SearchFilters } from "@/types";
 interface FilterSectionProps {
   onFiltersChange?: (filters: SearchFilters) => void;
   showQuickFilters?: boolean;
+  currentFilters?: SearchFilters;
 }
 
-export function FilterSection({ onFiltersChange, showQuickFilters = true }: FilterSectionProps) {
-  const [filters, setFilters] = useState<SearchFilters>({});
+export function FilterSection({ onFiltersChange, showQuickFilters = true, currentFilters = {} }: FilterSectionProps) {
+  const [filters, setFilters] = useState<SearchFilters>(currentFilters);
 
   const { data: filterOptions } = useQuery<FilterOptions>({
     queryKey: ["/api/filters"],
   });
+
+  // Update local state when currentFilters change from parent
+  useEffect(() => {
+    setFilters(currentFilters);
+  }, [currentFilters]);
 
   useEffect(() => {
     onFiltersChange?.(filters);
   }, [filters, onFiltersChange]);
 
   const handleFilterChange = (key: keyof SearchFilters, value: string) => {
-    setFilters(prev => ({
-      ...prev,
+    const newFilters = {
+      ...filters,
       [key]: value === 'all' ? undefined : value
-    }));
+    };
+    setFilters(newFilters);
+    onFiltersChange?.(newFilters);
   };
 
   const clearAllFilters = () => {
