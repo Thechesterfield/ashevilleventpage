@@ -29,10 +29,6 @@ export function FilterSection({ onFiltersChange, showQuickFilters = true, curren
     setFilters(currentFilters);
   }, [currentFilters]);
 
-  useEffect(() => {
-    onFiltersChange?.(filters);
-  }, [filters, onFiltersChange]);
-
   const handleFilterChange = (key: keyof SearchFilters, value: string) => {
     const newFilters = {
       ...filters,

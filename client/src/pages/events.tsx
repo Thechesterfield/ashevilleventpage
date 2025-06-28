@@ -53,13 +53,7 @@ export default function Events() {
   };
 
   const handleFiltersChange = (newFilters: SearchFilters) => {
-    // Merge new filters with existing ones, preserving search
-    setFilters(prev => ({
-      ...prev,
-      ...newFilters,
-      // Keep search if it exists
-      ...(prev.search && { search: prev.search })
-    }));
+    setFilters(newFilters);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
