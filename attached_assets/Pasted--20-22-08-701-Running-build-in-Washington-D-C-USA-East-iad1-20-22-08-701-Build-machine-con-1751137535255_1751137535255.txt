@@ -1,0 +1,64 @@
+[20:22:08.701] Running build in Washington, D.C., USA (East) – iad1
+[20:22:08.701] Build machine configuration: 2 cores, 8 GB
+[20:22:08.733] Cloning github.com/Thechesterfield/ashevilleventpage (Branch: main, Commit: c9c858c)
+[20:22:09.017] Cloning completed: 284.000ms
+[20:22:10.155] Restored build cache from previous deployment (EHzUYoVdRQjYAQfd2Dxh6KvLD9cy)
+[20:22:10.779] Running "vercel build"
+[20:22:11.226] Vercel CLI 43.3.0
+[20:22:11.397] WARN! Due to `builds` existing in your configuration file, the Build and Development Settings defined in your Project Settings will not apply. Learn More: https://vercel.link/unused-build-settings
+[20:22:11.988] Installing dependencies...
+[20:22:13.430] 
+[20:22:13.431] up to date in 1s
+[20:22:13.432] 
+[20:22:13.432] 81 packages are looking for funding
+[20:22:13.432]   run `npm fund` for details
+[20:22:13.467] Running "npm run build"
+[20:22:13.587] 
+[20:22:13.588] > rest-express@1.0.0 build
+[20:22:13.588] > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+[20:22:13.588] 
+[20:22:13.942] [36mvite v5.4.19 [32mbuilding for production...[36m[39m
+[20:22:14.290] transforming...
+[20:22:14.369] Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+[20:22:14.369]   npx update-browserslist-db@latest
+[20:22:14.369]   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[20:22:18.341] [32m✓[39m 1720 modules transformed.
+[20:22:18.610] rendering chunks...
+[20:22:18.620] computing gzip size...
+[20:22:18.884] [2m../dist/public/[22m[32mindex.html                 [39m[1m[2m  0.63 kB[22m[1m[22m[2m │ gzip:   0.38 kB[22m
+[20:22:18.886] [2m../dist/public/[22m[2massets/[22m[35mindex-BqioqnHM.css  [39m[1m[2m 63.73 kB[22m[1m[22m[2m │ gzip:  11.39 kB[22m
+[20:22:18.887] [2m../dist/public/[22m[2massets/[22m[36mindex-BxDnPQDH.js   [39m[1m[2m347.66 kB[22m[1m[22m[2m │ gzip: 109.61 kB[22m
+[20:22:18.887] [32m✓ built in 4.63s[39m
+[20:22:18.949] 
+[20:22:18.949]   dist/index.js  30.4kb
+[20:22:18.949] 
+[20:22:18.949] ⚡ Done in 12ms
+[20:22:19.258] Using TypeScript 5.6.3 (local user-provided)
+[20:22:24.226] server/vite.ts(39,5): error TS2322: Type '{ middlewareMode: boolean; hmr: { server: Server<typeof IncomingMessage, typeof ServerResponse>; }; allowedHosts: boolean; }' is not assignable to type 'ServerOptions'.
+[20:22:24.227]   Types of property 'allowedHosts' are incompatible.
+[20:22:24.228]     Type 'boolean' is not assignable to type 'true | string[] | undefined'.
+[20:22:24.228] 
+[20:22:25.191] server/storage.ts(206,11): error TS2322: Type '{ id: number; name: string; address: string; website?: string | null | undefined; description?: string | null | undefined; capacity?: number | null | undefined; imageUrl?: string | null | undefined; }' is not assignable to type '{ id: number; name: string; address: string; website: string | null; description: string | null; capacity: number | null; imageUrl: string | null; }'.
+[20:22:25.192]   Types of property 'website' are incompatible.
+[20:22:25.193]     Type 'string | null | undefined' is not assignable to type 'string | null'.
+[20:22:25.196]       Type 'undefined' is not assignable to type 'string | null'.
+[20:22:25.197] server/storage.ts(213,11): error TS2322: Type '{ id: number; title: string; venueId: number; startDate: Date; description?: string | null | undefined; imageUrl?: string | null | undefined; endDate?: Date | null | undefined; ... 9 more ...; status?: string | ... 1 more ... | undefined; }' is not assignable to type '{ id: number; description: string | null; imageUrl: string | null; title: string; venueId: number; startDate: Date; endDate: Date | null; startTime: string | null; endTime: string | null; ... 7 more ...; status: string | null; }'.
+[20:22:25.199]   Types of property 'description' are incompatible.
+[20:22:25.199]     Type 'string | null | undefined' is not assignable to type 'string | null'.
+[20:22:25.200]       Type 'undefined' is not assignable to type 'string | null'.
+[20:22:25.200] server/storage.ts(362,11): error TS2322: Type '{ id: number; name: string; website?: string | null | undefined; description?: string | null | undefined; imageUrl?: string | null | undefined; genre?: string | null | undefined; }' is not assignable to type '{ id: number; name: string; website: string | null; description: string | null; imageUrl: string | null; genre: string | null; }'.
+[20:22:25.204]   Types of property 'website' are incompatible.
+[20:22:25.205]     Type 'string | null | undefined' is not assignable to type 'string | null'.
+[20:22:25.205]       Type 'undefined' is not assignable to type 'string | null'.
+[20:22:25.206] server/storage.ts(380,11): error TS2322: Type '{ id: number; eventId: number; artistId: number; isHeadliner?: boolean | null | undefined; }' is not assignable to type '{ id: number; eventId: number; artistId: number; isHeadliner: boolean | null; }'.
+[20:22:25.206]   Types of property 'isHeadliner' are incompatible.
+[20:22:25.206]     Type 'boolean | null | undefined' is not assignable to type 'boolean | null'.
+[20:22:25.208]       Type 'undefined' is not assignable to type 'boolean | null'.
+[20:22:25.208] 
+[20:22:36.010] Build Completed in /vercel/output [24s]
+[20:22:36.317] Deploying outputs...
+[20:22:42.988] 
+[20:22:43.133] Deployment completed
+[20:23:02.656] Uploading build cache [86.94 MB]...
+[20:23:03.753] Build cache uploaded: 1.100s
+[20:23:05.973] Exiting build container
