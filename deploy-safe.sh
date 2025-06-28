@@ -48,6 +48,155 @@ for item in .*; do
     fi
 done
 
+echo "Creating API serverless functions..."
+# Create API directory structure
+mkdir -p "$PROJECT_DIR"/api/admin
+mkdir -p "$PROJECT_DIR"/api/events
+
+# Create the serverless API functions
+cat > "$PROJECT_DIR"/api/events.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DatabaseStorage } from '../server/database';
+
+const storage = new DatabaseStorage();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const events = await storage.getEventsWithVenue();
+    res.json(events);
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    res.status(500).json({ message: 'Failed to fetch events' });
+  }
+}
+APIEOF
+
+cat > "$PROJECT_DIR"/api/admin/update-events.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { VenueScraper } from '../../server/scrapers';
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const scraper = new VenueScraper();
+    console.log(`[${new Date().toISOString()}] Starting event update via API...`);
+    
+    await scraper.scrapeAllVenues();
+    
+    console.log(`[${new Date().toISOString()}] Event update completed successfully`);
+    res.json({ message: 'Event update triggered successfully' });
+  } catch (error) {
+    console.error(`[${new Date().toISOString()}] Error during event update:`, error);
+    res.status(500).json({ message: 'Failed to trigger event update' });
+  }
+}
+APIEOF
+
+cat > "$PROJECT_DIR"/api/events/featured.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DatabaseStorage } from '../../server/database';
+
+const storage = new DatabaseStorage();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const events = await storage.getFeaturedEvents();
+    const eventsWithVenue = await Promise.all(events.map(async event => {
+      const venue = await storage.getVenue(event.venueId);
+      return { ...event, venue: venue! };
+    }));
+    res.json(eventsWithVenue);
+  } catch (error) {
+    console.error('Error fetching featured events:', error);
+    res.status(500).json({ message: 'Failed to fetch featured events' });
+  }
+}
+APIEOF
+
+cat > "$PROJECT_DIR"/api/events/this-week.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DatabaseStorage } from '../../server/database';
+
+const storage = new DatabaseStorage();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const events = await storage.getEventsThisWeek();
+    res.json(events);
+  } catch (error) {
+    console.error('Error fetching this week events:', error);
+    res.status(500).json({ message: 'Failed to fetch this week events' });
+  }
+}
+APIEOF
+
+cat > "$PROJECT_DIR"/api/filters.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DatabaseStorage } from '../server/database';
+
+const storage = new DatabaseStorage();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const events = await storage.getAllEvents();
+    const venues = await storage.getAllVenues();
+    
+    const genres = Array.from(new Set(events.map(event => event.genre).filter(Boolean)));
+    const venueNames = venues.map(venue => venue.name);
+    
+    res.json({
+      genres,
+      venues: venueNames
+    });
+  } catch (error) {
+    console.error('Error fetching filter options:', error);
+    res.status(500).json({ message: 'Failed to fetch filter options' });
+  }
+}
+APIEOF
+
+cat > "$PROJECT_DIR"/api/venues.ts << 'APIEOF'
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { DatabaseStorage } from '../server/database';
+
+const storage = new DatabaseStorage();
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ message: 'Method not allowed' });
+  }
+
+  try {
+    const venues = await storage.getVenuesWithEvents();
+    res.json(venues);
+  } catch (error) {
+    console.error('Error fetching venues:', error);
+    res.status(500).json({ message: 'Failed to fetch venues' });
+  }
+}
+APIEOF
+
+echo "API functions created successfully!"
+
 echo "Restoring deployment configuration..."
 cd "$PROJECT_DIR"
 # Restore deployment files if they were accidentally overwritten
