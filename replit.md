@@ -108,6 +108,7 @@ The application uses four main entities:
 - June 28, 2025. Updated Vercel deployment configuration to fix runtime error - ready for redeployment
 - June 28, 2025. Simplified Vercel configuration for static frontend deployment - resolves text-only display issue
 - June 28, 2025. Added complete serverless API setup for full-stack Vercel deployment with Neon database integration
+- June 28, 2025. Fixed Vercel routing for SPA and integrated authentic scraped event data - site ready for deployment
 
 ## User Preferences
 

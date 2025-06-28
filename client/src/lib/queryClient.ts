@@ -81,19 +81,19 @@ export const getQueryFn: <T>(options: {
       console.log(`API unavailable, using authentic scraped data for ${url}`);
       
       if (url.includes('/api/events/this-week')) {
-        return getEventsThisWeek() as T;
+        return getEventsThisWeek();
       }
       if (url.includes('/api/events/featured')) {
-        return getFeaturedEvents() as T;
+        return getFeaturedEvents();
       }
       if (url.includes('/api/events')) {
-        return eventsData as T;
+        return eventsData;
       }
       if (url.includes('/api/venues')) {
-        return getVenuesWithEvents() as T;
+        return getVenuesWithEvents();
       }
       if (url.includes('/api/filters')) {
-        return getFilterOptions() as T;
+        return getFilterOptions();
       }
       
       // For calendar events, filter by date
@@ -106,7 +106,7 @@ export const getQueryFn: <T>(options: {
         return eventsData.filter(event => {
           const eventDate = new Date(event.startDate);
           return eventDate >= startDate && eventDate <= endDate;
-        }) as T;
+        });
       }
       
       throw error;
