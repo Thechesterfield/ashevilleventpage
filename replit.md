@@ -107,6 +107,7 @@ The application uses four main entities:
 - June 28, 2025. Fixed search button alignment and filter functionality - all filtering now works correctly with proper API calls
 - June 28, 2025. Updated Vercel deployment configuration to fix runtime error - ready for redeployment
 - June 28, 2025. Simplified Vercel configuration for static frontend deployment - resolves text-only display issue
+- June 28, 2025. Added complete serverless API setup for full-stack Vercel deployment with Neon database integration
 
 ## User Preferences
 
