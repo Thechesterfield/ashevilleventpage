@@ -1,0 +1,272 @@
+chester@KMCD ashevilleventpage % curl https://ashevilleventpage.com/api/venues
+curl https://ashevilleventpage.com/api/events
+curl https://ashevilleventpage.com/api/events/this-week
+The page could not be found
+
+NOT_FOUND
+
+iad1::tsdr8-1751315053630-4e59b5f736df
+The page could not be found
+
+NOT_FOUND
+
+iad1::8lzbf-1751315054085-f12e9eb2dd72
+The page could not be found
+
+NOT_FOUND
+
+iad1::ccz85-1751315054608-306117b86f24
+chester@KMCD ashevilleventpage % vercel ls
+Vercel CLI 44.2.7
+> Deployments for chads-projects-99b6b34a/ashevilleventpage [393ms]
+
+  Age     Deployment                                                                 Status      Environment     Duration     Username
+  1h      https://ashevilleventpage-aqk74mxne-chads-projects-99b6b34a.vercel.app     ● Ready     Production      41s          thechesterfield
+  2d      https://ashevilleventpage-icareo2zf-chads-projects-99b6b34a.vercel.app     ● Ready     Production      4s           thechesterfield
+  2d      https://ashevilleventpage-3etmwsph6-chads-projects-99b6b34a.vercel.app     ● Ready     Production      31s          thechesterfield
+  2d      https://ashevilleventpage-evq589oc2-chads-projects-99b6b34a.vercel.app     ● Ready     Production      29s          thechesterfield
+  2d      https://ashevilleventpage-6jz5kzy6t-chads-projects-99b6b34a.vercel.app     ● Ready     Production      32s          thechesterfield
+  2d      https://ashevilleventpage-jvunz6tcp-chads-projects-99b6b34a.vercel.app     ● Ready     Production      13s          thechesterfield
+  2d      https://ashevilleventpage-1qiiebzfx-chads-projects-99b6b34a.vercel.app     ● Ready     Production      12s          thechesterfield
+  3d      https://ashevilleventpage-87tt0k7ao-chads-projects-99b6b34a.vercel.app     ● Ready     Production      34s          thechesterfield
+  3d      https://ashevilleventpage-2g0mypcm7-chads-projects-99b6b34a.vercel.app     ● Ready     Production      34s          thechesterfield
+  3d      https://ashevilleventpage-qfb5j637e-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-h3a98ig74-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-7v31bo6y5-chads-projects-99b6b34a.vercel.app     ● Ready     Production      11s          thechesterfield
+  3d      https://ashevilleventpage-o2yxl74r8-chads-projects-99b6b34a.vercel.app     ● Ready     Production      19s          thechesterfield
+  3d      https://ashevilleventpage-bsmo34c0k-chads-projects-99b6b34a.vercel.app     ● Error     Production      2s           thechesterfield
+  3d      https://ashevilleventpage-e0srcjcqc-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-3e8l1fiys-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-mw46a23ob-chads-projects-99b6b34a.vercel.app     ● Error     Production      2s           thechesterfield
+  3d      https://ashevilleventpage-noxly5h2c-chads-projects-99b6b34a.vercel.app     ● Ready     Production      4s           thechesterfield
+  3d      https://ashevilleventpage-4i1v8ipxy-chads-projects-99b6b34a.vercel.app     ● Ready     Production      32s          thechesterfield
+  3d      https://ashevilleventpage-r09lsydsv-chads-projects-99b6b34a.vercel.app     ● Error     Production      ?            thechesterfield
+
+> To display the next page, run `vercel ls --next 1751061334002`
+chester@KMCD ashevilleventpage % commit
+Enter commit message: test
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+branch 'main' set up to track 'origin/main'.
+Everything up-to-date
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+chester@KMCD ashevilleventpage % cat ./server/routes.ts
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { insertEventSchema, insertVenueSchema } from "@shared/schema";
+import { eventScheduler } from "./scheduler";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Venue routes
+  app.get("/api/venues", async (req, res) => {
+    try {
+      const venues = await storage.getAllVenues();
+      res.json(venues);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch venues" });
+    }
+  });
+
+  app.get("/api/venues/with-events", async (req, res) => {
+    try {
+      const venuesWithEvents = await storage.getVenuesWithEvents();
+      res.json(venuesWithEvents);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch venues with events" });
+    }
+  });
+
+  app.get("/api/venues/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const venue = await storage.getVenue(id);
+      if (!venue) {
+        return res.status(404).json({ message: "Venue not found" });
+      }
+      res.json(venue);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch venue" });
+    }
+  });
+
+  app.get("/api/venues/:id/events", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const events = await storage.getEventsByVenue(id);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch venue events" });
+    }
+  });
+
+  // Event routes
+  app.get("/api/events", async (req, res) => {
+    try {
+      const { genre, venue, startDate, endDate, search } = req.query;
+
+      let events;
+
+      if (search) {
+        events = await storage.searchEvents(search as string);
+      } else if (startDate && endDate) {
+        const allEvents = await storage.getEventsByDateRange(
+          new Date(startDate as string),
+          new Date(endDate as string)
+        );
+        events = await Promise.all(allEvents.map(async event => {
+          const venueData = await storage.getVenue(event.venueId);
+          return { ...event, venue: venueData! };
+        }));
+      } else {
+        events = await storage.getEventsWithVenue();
+      }
+
+      // Apply filters
+      if (genre && genre !== 'all') {
+        events = events.filter(event =>
+          event.genre?.toLowerCase() === (genre as string).toLowerCase()
+        );
+      }
+
+      if (venue && venue !== 'all') {
+        events = events.filter(event =>
+          event.venue.name.toLowerCase().includes((venue as string).toLowerCase())
+        );
+      }
+
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch events" });
+    }
+  });
+
+  app.get("/api/events/this-week", async (req, res) => {
+    try {
+      const events = await storage.getEventsThisWeek();
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch this week's events" });
+    }
+  });
+
+  app.get("/api/events/upcoming", async (req, res) => {
+    try {
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const events = await storage.getUpcomingEvents(limit);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch upcoming events" });
+    }
+  });
+
+  app.get("/api/events/featured", async (req, res) => {
+    try {
+      const events = await storage.getFeaturedEvents();
+      const eventsWithVenue = await Promise.all(events.map(async event => {
+        const venue = await storage.getVenue(event.venueId);
+        return { ...event, venue: venue! };
+      }));
+      res.json(eventsWithVenue);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch featured events" });
+    }
+  });
+
+  app.get("/api/events/calendar/:year/:month", async (req, res) => {
+    try {
+      const year = parseInt(req.params.year);
+      const month = parseInt(req.params.month);
+
+      const startDate = new Date(year, month - 1, 1);
+      const endDate = new Date(year, month, 0);
+
+      const events = await storage.getEventsByDateRange(startDate, endDate);
+      const eventsWithVenue = await Promise.all(events.map(async event => {
+        const venue = await storage.getVenue(event.venueId);
+        return { ...event, venue: venue! };
+      }));
+
+      res.json(eventsWithVenue);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch calendar events" });
+    }
+  });
+
+  app.get("/api/events/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const event = await storage.getEvent(id);
+      if (!event) {
+        return res.status(404).json({ message: "Event not found" });
+      }
+
+      const venue = await storage.getVenue(event.venueId);
+      const eventWithVenue = { ...event, venue: venue! };
+
+      res.json(eventWithVenue);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch event" });
+    }
+  });
+
+  // Search endpoint
+  app.get("/api/search", async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q) {
+        return res.status(400).json({ message: "Search query required" });
+      }
+
+      const events = await storage.searchEvents(q as string);
+      res.json(events);
+    } catch (error) {
+      res.status(500).json({ message: "Search failed" });
+    }
+  });
+
+  // Filter options endpoint
+  app.get("/api/filters", async (req, res) => {
+    try {
+      const events = await storage.getAllEvents();
+      const venues = await storage.getAllVenues();
+
+      const genres = Array.from(new Set(events.map(event => event.genre).filter(Boolean)));
+      const venueNames = venues.map(venue => venue.name);
+
+      res.json({
+        genres,
+        venues: venueNames
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch filter options" });
+    }
+  });
+
+  // Event update endpoints
+  app.post("/api/admin/update-events", async (req, res) => {
+    try {
+      await eventScheduler.triggerUpdate();
+      res.json({ message: "Event update triggered successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to trigger event update" });
+    }
+  });
+
+  app.get("/api/admin/update-status", async (req, res) => {
+    try {
+      const status = eventScheduler.getStatus();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get update status" });
+    }
+  });
+
+  const httpServer = createServer(app);
+  return httpServer;
+}

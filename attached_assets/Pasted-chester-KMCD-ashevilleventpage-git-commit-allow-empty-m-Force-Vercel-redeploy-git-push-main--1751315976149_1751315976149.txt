@@ -1,0 +1,36 @@
+chester@KMCD ashevilleventpage % git commit --allow-empty -m "Force Vercel redeploy"
+git push
+[main d762fab] Force Vercel redeploy
+Enumerating objects: 1, done.
+Counting objects: 100% (1/1), done.
+Writing objects: 100% (1/1), 187 bytes | 187.00 KiB/s, done.
+Total 1 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/Thechesterfield/ashevilleventpage.git
+   14c1ea7..d762fab  main -> main
+chester@KMCD ashevilleventpage % vercel ls
+Vercel CLI 44.2.7
+> Deployments for chads-projects-99b6b34a/ashevilleventpage [130ms]
+
+  Age     Deployment                                                                 Status      Environment     Duration     Username
+  2h      https://ashevilleventpage-aqk74mxne-chads-projects-99b6b34a.vercel.app     ● Ready     Production      41s          thechesterfield
+  2d      https://ashevilleventpage-icareo2zf-chads-projects-99b6b34a.vercel.app     ● Ready     Production      4s           thechesterfield
+  2d      https://ashevilleventpage-3etmwsph6-chads-projects-99b6b34a.vercel.app     ● Ready     Production      31s          thechesterfield
+  2d      https://ashevilleventpage-evq589oc2-chads-projects-99b6b34a.vercel.app     ● Ready     Production      29s          thechesterfield
+  2d      https://ashevilleventpage-6jz5kzy6t-chads-projects-99b6b34a.vercel.app     ● Ready     Production      32s          thechesterfield
+  2d      https://ashevilleventpage-jvunz6tcp-chads-projects-99b6b34a.vercel.app     ● Ready     Production      13s          thechesterfield
+  2d      https://ashevilleventpage-1qiiebzfx-chads-projects-99b6b34a.vercel.app     ● Ready     Production      12s          thechesterfield
+  3d      https://ashevilleventpage-87tt0k7ao-chads-projects-99b6b34a.vercel.app     ● Ready     Production      34s          thechesterfield
+  3d      https://ashevilleventpage-2g0mypcm7-chads-projects-99b6b34a.vercel.app     ● Ready     Production      34s          thechesterfield
+  3d      https://ashevilleventpage-qfb5j637e-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-h3a98ig74-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-7v31bo6y5-chads-projects-99b6b34a.vercel.app     ● Ready     Production      11s          thechesterfield
+  3d      https://ashevilleventpage-o2yxl74r8-chads-projects-99b6b34a.vercel.app     ● Ready     Production      19s          thechesterfield
+  3d      https://ashevilleventpage-bsmo34c0k-chads-projects-99b6b34a.vercel.app     ● Error     Production      2s           thechesterfield
+  3d      https://ashevilleventpage-e0srcjcqc-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-3e8l1fiys-chads-projects-99b6b34a.vercel.app     ● Error     Production      3s           thechesterfield
+  3d      https://ashevilleventpage-mw46a23ob-chads-projects-99b6b34a.vercel.app     ● Error     Production      2s           thechesterfield
+  3d      https://ashevilleventpage-noxly5h2c-chads-projects-99b6b34a.vercel.app     ● Ready     Production      4s           thechesterfield
+  3d      https://ashevilleventpage-4i1v8ipxy-chads-projects-99b6b34a.vercel.app     ● Ready     Production      32s          thechesterfield
+  3d      https://ashevilleventpage-r09lsydsv-chads-projects-99b6b34a.vercel.app     ● Error     Production      ?            thechesterfield
+
+> To display the next page, run `vercel ls --next 1751061334002`
