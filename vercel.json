@@ -40,5 +40,9 @@
       "path": "/api/cron",
       "schedule": "0 6 * * *"
     }
-  ]
+  ],
+  "env": {
+    "DATABASE_URL": "@database_url",
+    "CRON_SECRET": "@cron_secret"
+  }
 }
