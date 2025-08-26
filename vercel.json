@@ -10,10 +10,10 @@
       "use": "@vercel/node"
     },
     {
-      "src": "client/index.html",
+      "src": "client/",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "dist"
+        "distDir": "../dist"
       }
     }
   ],
